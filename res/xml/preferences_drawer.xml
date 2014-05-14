@@ -28,10 +28,6 @@
             android:title="@string/preferences_interface_drawer_hidden_apps_shortcuts_title"
             android:summary="@string/preferences_interface_drawer_hidden_apps_shortcuts_summary"
             android:defaultValue="@bool/preferences_interface_drawer_remove_hidden_apps_shortcuts_default" />
-        <CheckBoxPreference android:key="ui_drawer_remove_hidden_apps_widgets"
-            android:title="@string/preferences_interface_drawer_hidden_apps_widgets_title"
-            android:summary="@string/preferences_interface_drawer_hidden_apps_widgets_summary"
-            android:defaultValue="@bool/preferences_interface_drawer_remove_hidden_apps_widgets_default" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/preferences_interface_general_icons_category">
         <CheckBoxPreference android:key="ui_drawer_hide_icon_labels"
