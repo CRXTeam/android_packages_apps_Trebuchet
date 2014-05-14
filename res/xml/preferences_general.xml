@@ -31,7 +31,7 @@
                 android:defaultValue="@string/preferences_interface_general_icons_text_font_family_default" />
     </PreferenceCategory>
 
-	    <PreferenceCategory 
+	<PreferenceCategory 
         android:title="@string/pref_workspace_title"
         android:key="pref_key_workspace_settings">
 
