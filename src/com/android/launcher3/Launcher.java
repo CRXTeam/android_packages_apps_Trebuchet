@@ -45,6 +45,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -65,6 +66,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.text.Selection;
@@ -441,6 +443,9 @@ public class Launcher extends Activity
 
         setupViews();
         grid.layout(this);
+		
+		PreferenceManager.getDefaultSharedPreferences(this)
+                .registerOnSharedPreferenceChangeListener(mSharedPreferencesObserver);
 
         registerContentObservers();
 
@@ -995,7 +1000,7 @@ public class Launcher extends Activity
             settings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                     | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         } else {
-            settings = new Intent(android.provider.Settings.ACTION_SETTINGS);
+            Intent i = new Intent(this, LauncherPreferencesActivity.class);
         }
         startActivity(settings);
         if (mWorkspace.isInOverviewMode()) {
@@ -1987,10 +1992,27 @@ public class Launcher extends Activity
             outState.putInt("apps_customize_currentIndex", currentIndex);
         }
     }
+	
+	private final OnSharedPreferenceChangeListener mSharedPreferencesObserver = new OnSharedPreferenceChangeListener() {
+		@Override
+		public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+				String key) {
+
+			if(LauncherPreferences.isLauncherPreference(key)) {
+				if(!isFinishing()) {
+					Launcher.this.
+					recreate();
+				}
+			}
+		}
+	};
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+		
+		PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(mSharedPreferencesObserver);
 
         // Remove all pending runnables
         mHandler.removeMessages(ADVANCE_MSG);
@@ -4003,6 +4025,18 @@ public class Launcher extends Activity
                      */
                     if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
                         CellLayout cl = mWorkspace.getScreenWithId(item.screenId);
+						
+						if (cl == null) {
+                            Log.w(TAG, "Missing screen with id: " + Long.toString(item.screenId));
+                            continue;
+                        }
+
+                        if (item.cellX >= cl.getCountX() || item.cellY >= cl.getCountY()) {
+                            Log.w(TAG, "Item out of bounds");
+                            // probably due to workspace size change
+                            continue;
+                        }
+				
                         if (cl != null && cl.isOccupied(item.cellX, item.cellY)) {
                             throw new RuntimeException("OCCUPIED");
                         }
