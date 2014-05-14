@@ -337,8 +337,8 @@ public class Workspace extends SmoothPagedView
                 res.getInteger(R.integer.config_workspaceOverviewShrinkPercentage) / 100.0f;
         mOverviewModePageOffset = res.getDimensionPixelSize(R.dimen.overview_mode_page_offset);
         mCameraDistance = res.getInteger(R.integer.config_cameraDistance);
-        mDefaultPage = a.getInt(R.styleable.Workspace_defaultScreen, 1);
-		mOriginalDefaultPage = mDefaultPage =
+        //mDefaultPage = a.getInt(R.styleable.Workspace_defaultScreen, 1);
+		mDefaultPage =
                 PreferenceManager.getDefaultSharedPreferences(context)
                         .getInt(LauncherPreferences.KEY_WORKSPACE_DEFAULT_PAGE,
                                 a.getInt(R.styleable.Workspace_defaultScreen, 0));

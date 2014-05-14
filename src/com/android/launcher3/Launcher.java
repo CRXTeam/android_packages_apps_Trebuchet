@@ -1000,7 +1000,7 @@ public class Launcher extends Activity
             settings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                     | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         } else {
-            Intent i = new Intent(this, LauncherPreferencesActivity.class);
+            settings = new Intent(this, LauncherPreferencesActivity.class);
         }
         startActivity(settings);
         if (mWorkspace.isInOverviewMode()) {
