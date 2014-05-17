@@ -65,13 +65,10 @@ public class LiveFoldersReceiver extends BroadcastReceiver {
                         return;
                     }
 
-                    fInfo.populateWithItems(context, items);
-
                     // Update folder title provided
                     if (intent.hasExtra(LiveFolder.Constants.FOLDER_TITLE_EXTRA)) {
                         String title = intent.getStringExtra(
                                 LiveFolder.Constants.FOLDER_TITLE_EXTRA);
-                        fInfo.title = title;
                     }
                 }
             }
