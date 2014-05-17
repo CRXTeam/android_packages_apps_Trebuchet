@@ -65,13 +65,6 @@ public class LiveFoldersReceiver extends BroadcastReceiver {
                         return;
                     }
 
-                    LiveFolderInfo fInfo = (LiveFolderInfo) folder;
-
-                    if (!fInfo.isOwner(context, getSendingPackage(intent))) {
-                        Log.e(TAG, "Cannot modify a folder that belongs to another package");
-                        return;
-                    }
-
                     fInfo.populateWithItems(context, items);
 
                     // Update folder title provided
@@ -87,13 +80,6 @@ public class LiveFoldersReceiver extends BroadcastReceiver {
 
             synchronized (LauncherModel.sBgLock) {
                 for (FolderInfo info : LauncherModel.sBgFolders.values()) {
-                    if (info instanceof LiveFolderInfo) {
-                        LiveFolderInfo fInfo = (LiveFolderInfo) info;
-
-                        if (fInfo.isOwner(context, getSendingPackage(intent))) {
-                            fInfo.populateWithItems(context, items);
-                        }
-                    }
                 }
             }
 
