@@ -25,12 +25,13 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 
 import java.util.HashSet;
+import java.util.WeakHashMap;
 
 public class LauncherAnimUtils {
-    static HashSet<Animator> sAnimators = new HashSet<Animator>();
+    static WeakHashMap<Animator, Object> sAnimators = new WeakHashMap<Animator, Object>();
     static Animator.AnimatorListener sEndAnimListener = new Animator.AnimatorListener() {
         public void onAnimationStart(Animator animation) {
-            sAnimators.add(animation);
+            sAnimators.put(animation, null);
         }
 
         public void onAnimationRepeat(Animator animation) {
@@ -74,13 +75,12 @@ public class LauncherAnimUtils {
     }
 
     public static void onDestroyActivity() {
-        HashSet<Animator> animators = new HashSet<Animator>(sAnimators);
+        HashSet<Animator> animators = new HashSet<Animator>(sAnimators.keySet());
         for (Animator a : animators) {
             if (a.isRunning()) {
                 a.cancel();
-            } else {
-                sAnimators.remove(a);
             }
+            sAnimators.remove(a);
         }
     }
 
@@ -103,7 +103,12 @@ public class LauncherAnimUtils {
         anim.setPropertyName(propertyName);
         anim.setFloatValues(values);
         cancelOnDestroyActivity(anim);
-        new FirstFrameAnimatorHelper(anim, target);
+        // If the animation scale is less than 1f the FirstFrameAnimatorHelper sometimes causes
+        // the animation to not finish (e.g. opening a Folder will result in the Folder View's
+        // alpha being stuck somewhere between 0-1f.
+        if (Launcher.isAnimatorScaleSafe()) {
+            new FirstFrameAnimatorHelper(anim, target);
+        }
         return anim;
     }
 
@@ -113,7 +118,12 @@ public class LauncherAnimUtils {
         anim.setTarget(target);
         anim.setValues(values);
         cancelOnDestroyActivity(anim);
-        new FirstFrameAnimatorHelper(anim, target);
+        // If the animation scale is less than 1f the FirstFrameAnimatorHelper sometimes causes
+        // the animation to not finish (e.g. opening a Folder will result in the Folder View's
+        // alpha being stuck somewhere between 0-1f.
+        if (Launcher.isAnimatorScaleSafe()) {
+            new FirstFrameAnimatorHelper(anim, target);
+        }
         return anim;
     }
 
@@ -123,7 +133,12 @@ public class LauncherAnimUtils {
         anim.setTarget(target);
         anim.setValues(values);
         cancelOnDestroyActivity(anim);
-        new FirstFrameAnimatorHelper(anim, view);
+        // If the animation scale is less than 1f the FirstFrameAnimatorHelper sometimes causes
+        // the animation to not finish (e.g. opening a Folder will result in the Folder View's
+        // alpha being stuck somewhere between 0-1f.
+        if (Launcher.isAnimatorScaleSafe()) {
+            new FirstFrameAnimatorHelper(anim, view);
+        }
         return anim;
     }
 }
